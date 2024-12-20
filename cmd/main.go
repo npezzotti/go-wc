@@ -45,9 +45,24 @@ func main() {
 	wordCount := wc.WordCount{}
 	if len(flag.Args()) > 0 {
 		for _, fileName := range flag.Args() {
+			fileInfo, err := os.Lstat(fileName)
+			if err != nil {
+				if os.IsNotExist(err) {
+					log.Printf("%s: %s: file does not exist\n", progName, fileName)
+				} else {
+					log.Printf("%s: lstat %s: %s\n", progName, fileName, err.Error())
+				}
+				continue
+			}
+			
+			if fileInfo.IsDir() {
+				log.Printf("%s is a directory skipping", fileInfo.Name())
+				continue
+			}
+
 			f, err := os.Open(fileName)
 			if err != nil {
-				log.Printf("%s: %s\n", progName, err.Error())
+				log.Printf("%s: error opening file: %s\n", progName, err.Error())
 				continue
 			}
 			defer f.Close()
