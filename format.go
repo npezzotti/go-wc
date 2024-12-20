@@ -37,18 +37,15 @@ type TemplateFormatter struct {
 }
 
 func NewTemplateFormatter(tmplString string, writer io.Writer) (*TemplateFormatter, error) {
-	tf := &TemplateFormatter{
-		output: writer,
-	}
-
 	tmpl, err := template.New("").Parse(cleanTemplateString(tmplString))
 	if err != nil {
 		return nil, err
 	}
 
-	tf.tmpl = tmpl
-
-	return tf, nil
+	return &TemplateFormatter{
+		tmpl:   tmpl,
+		output: writer,
+	}, nil
 }
 
 func (tf TemplateFormatter) Write(wordCount WordCount) error {
