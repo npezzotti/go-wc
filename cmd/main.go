@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -21,6 +22,8 @@ var (
 
 func main() {
 	log.SetFlags(0)
+	log.SetPrefix(fmt.Sprintf("%s: ", progName))
+
 	flag.Parse()
 
 	tmplString := defaultTemplate
@@ -48,21 +51,21 @@ func main() {
 			fileInfo, err := os.Lstat(fileName)
 			if err != nil {
 				if os.IsNotExist(err) {
-					log.Printf("%s: %s: file does not exist\n", progName, fileName)
+					log.Printf("%s: file does not exist\n", fileName)
 				} else {
-					log.Printf("%s: lstat %s: %s\n", progName, fileName, err.Error())
+					log.Printf("lstat %s: %s\n", fileName, err.Error())
 				}
 				continue
 			}
-			
+
 			if fileInfo.IsDir() {
-				log.Printf("%s is a directory skipping", fileInfo.Name())
+				log.Printf("%s is a directory", fileName)
 				continue
 			}
 
 			f, err := os.Open(fileName)
 			if err != nil {
-				log.Printf("%s: error opening file: %s\n", progName, err.Error())
+				log.Printf("%s: unable to open file: %s\n", fileName, err.Error())
 				continue
 			}
 			defer f.Close()
