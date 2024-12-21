@@ -26,7 +26,7 @@ func (jf JsonFormatter) Write(wordCount WordCount) error {
 		return fmt.Errorf("unable to marshal json: %s", err.Error())
 	}
 
-	_, err = fmt.Fprintf(jf.Output, string(jsonBytes))
+	_, err = jf.Output.Write(jsonBytes)
 
 	return err
 }
