@@ -55,7 +55,7 @@ func main() {
 
 			f, err := os.Open(fileName)
 			if err != nil {
-				log.Printf("%s: unable to open file: %s\n", fileName, err.Error())
+				log.Printf("unable to open %s: %s\n", fileName, err.Error())
 				continue
 			}
 			defer f.Close()
