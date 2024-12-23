@@ -41,25 +41,15 @@ func main() {
 			os.Stdout,
 		)
 		if err != nil {
-			log.Fatalf("failed to initalize template formatter: %s", err.Error())
+			log.Fatalf("failed to initalize TemplateFormatter: %s", err.Error())
 		}
 	}
 
 	wordCount := wc.WordCount{}
 	if len(flag.Args()) > 0 {
 		for _, fileName := range flag.Args() {
-			fileInfo, err := os.Lstat(fileName)
-			if err != nil {
-				if os.IsNotExist(err) {
-					log.Printf("%s: file does not exist\n", fileName)
-				} else {
-					log.Printf("lstat %s: %s\n", fileName, err.Error())
-				}
-				continue
-			}
-
-			if fileInfo.IsDir() {
-				log.Printf("%s is a directory", fileName)
+			if err := validateFile(fileName); err != nil {
+				log.Print(err)
 				continue
 			}
 
@@ -81,4 +71,21 @@ func main() {
 	if wordCount.Files != nil {
 		fmtr.Write(wordCount)
 	}
+}
+
+func validateFile(fileName string) error {
+	fileInfo, err := os.Lstat(fileName)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return fmt.Errorf("%s: file does not exist", fileName)
+		} else {
+			return fmt.Errorf("lstat %s: %w", fileName, err)
+		}
+	}
+
+	if fileInfo.IsDir() {
+		return fmt.Errorf("%s is a directory", fileName)
+	}
+
+	return nil
 }
