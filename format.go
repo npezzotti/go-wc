@@ -13,11 +13,11 @@ type WCFormatter interface {
 }
 
 type JsonFormatter struct {
-	Output io.Writer
+	output io.Writer
 }
 
 func NewJsonFormatter(writer io.Writer) *JsonFormatter {
-	return &JsonFormatter{Output: writer}
+	return &JsonFormatter{output: writer}
 }
 
 func (jf JsonFormatter) Write(wordCount WordCount) error {
@@ -26,7 +26,7 @@ func (jf JsonFormatter) Write(wordCount WordCount) error {
 		return fmt.Errorf("unable to marshal json: %s", err.Error())
 	}
 
-	_, err = jf.Output.Write(jsonBytes)
+	_, err = jf.output.Write(jsonBytes)
 
 	return err
 }
