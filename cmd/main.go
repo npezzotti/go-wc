@@ -25,16 +25,16 @@ func main() {
 
 	flag.Parse()
 
-	tmplString := defaultTemplate
-	if *goTemplate != "" {
-		tmplString = *goTemplate
-	}
-
 	var fmtr wc.WCFormatter
 	var err error
 	if *jsonOutput {
 		fmtr = wc.NewJsonFormatter(os.Stdout)
 	} else {
+		tmplString := defaultTemplate
+		if *goTemplate != "" {
+			tmplString = *goTemplate
+		}
+
 		fmtr, err = wc.NewTemplateFormatter(
 			tmplString,
 			os.Stdout,
@@ -44,7 +44,7 @@ func main() {
 		}
 	}
 
-	wordCount := wc.WordCount{}
+	var wordCount wc.WordCount
 	if len(flag.Args()) > 0 {
 		for _, fileName := range flag.Args() {
 			if err := validateFile(fileName); err != nil {
