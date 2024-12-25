@@ -11,4 +11,4 @@ clean:
 	rm -rf bin/
 
 fmt:
-	go fmt */**.go
+	go fmt ./...
