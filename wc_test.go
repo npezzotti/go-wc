@@ -47,11 +47,13 @@ func TestAddFile(t *testing.T) {
 
 func TestEqual(t *testing.T) {
 	tcases := []struct {
-		wc1 WordCount
-		wc2 WordCount
-		res bool
+		name string
+		wc1  WordCount
+		wc2  WordCount
+		res  bool
 	}{
 		{
+			name: "wordcount with file",
 			wc1: WordCount{
 				Files: []File{
 					{
@@ -89,11 +91,13 @@ func TestEqual(t *testing.T) {
 			res: true,
 		},
 		{
-			wc1: WordCount{},
-			wc2: WordCount{},
-			res: true,
+			name: "wordcounts with nil files",
+			wc1:  WordCount{},
+			wc2:  WordCount{},
+			res:  true,
 		},
 		{
+			name: "wordcounts with non-equal total counts",
 			wc1: WordCount{
 				TotalLines:    10,
 				TotalWords:    5,
@@ -111,6 +115,7 @@ func TestEqual(t *testing.T) {
 			res: false,
 		},
 		{
+			name: "wordcount with nil file",
 			wc1: WordCount{
 				Files: []File{
 					{
@@ -127,6 +132,7 @@ func TestEqual(t *testing.T) {
 			res: false,
 		},
 		{
+			name: "wordcounts with non-nil non-equal files",
 			wc1: WordCount{
 				Files: []File{
 					{
@@ -159,6 +165,7 @@ func TestEqual(t *testing.T) {
 			res: false,
 		},
 		{
+			name: "wordcounts with non-equal length files",
 			wc1: WordCount{
 				Files: []File{
 					{
@@ -181,8 +188,10 @@ func TestEqual(t *testing.T) {
 	}
 
 	for _, tt := range tcases {
-		if res := tt.wc1.Equal(tt.wc2); res != tt.res {
-			t.Errorf("unexpected %t result for %+v and %+v", res, tt.wc1, tt.wc2)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			if res := tt.wc1.Equal(tt.wc2); res != tt.res {
+				t.Errorf("unexpected %t result for %+v and %+v", res, tt.wc1, tt.wc2)
+			}
+		})
 	}
 }
