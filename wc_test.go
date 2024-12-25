@@ -44,3 +44,145 @@ func TestAddFile(t *testing.T) {
 		}
 	}
 }
+
+func TestEqual(t *testing.T) {
+	tcases := []struct {
+		wc1 WordCount
+		wc2 WordCount
+		res bool
+	}{
+		{
+			wc1: WordCount{
+				Files: []File{
+					{
+						Name:          "test",
+						Lines:         15,
+						Words:         15,
+						Bytes:         14,
+						Runes:         25,
+						MaxLineLength: 10,
+					},
+				},
+				TotalLines:    10,
+				TotalWords:    5,
+				TotalBytes:    19,
+				TotalRunes:    20,
+				MaxLineLength: 15,
+			},
+			wc2: WordCount{
+				Files: []File{
+					{
+						Name:          "test",
+						Lines:         15,
+						Words:         15,
+						Bytes:         14,
+						Runes:         25,
+						MaxLineLength: 10,
+					},
+				},
+				TotalLines:    10,
+				TotalWords:    5,
+				TotalBytes:    19,
+				TotalRunes:    20,
+				MaxLineLength: 15,
+			},
+			res: true,
+		},
+		{
+			wc1: WordCount{},
+			wc2: WordCount{},
+			res: true,
+		},
+		{
+			wc1: WordCount{
+				TotalLines:    10,
+				TotalWords:    5,
+				TotalBytes:    19,
+				TotalRunes:    20,
+				MaxLineLength: 15,
+			},
+			wc2: WordCount{
+				TotalLines:    10,
+				TotalWords:    5,
+				TotalBytes:    19,
+				TotalRunes:    20,
+				MaxLineLength: 16,
+			},
+			res: false,
+		},
+		{
+			wc1: WordCount{
+				Files: []File{
+					{
+						Name:          "test",
+						Lines:         15,
+						Words:         15,
+						Bytes:         14,
+						Runes:         25,
+						MaxLineLength: 10,
+					},
+				},
+			},
+			wc2: WordCount{},
+			res: false,
+		},
+		{
+			wc1: WordCount{
+				Files: []File{
+					{
+						Name:          "test",
+						Lines:         15,
+						Words:         15,
+						Bytes:         14,
+						Runes:         25,
+						MaxLineLength: 10,
+					},
+				},
+				TotalLines:    10,
+				TotalWords:    5,
+				TotalBytes:    19,
+				TotalRunes:    20,
+				MaxLineLength: 15,
+			},
+			wc2: WordCount{
+				Files: []File{
+					{
+						Name: "test",
+					},
+				},
+				TotalLines:    10,
+				TotalWords:    5,
+				TotalBytes:    19,
+				TotalRunes:    20,
+				MaxLineLength: 15,
+			},
+			res: false,
+		},
+		{
+			wc1: WordCount{
+				Files: []File{
+					{
+						Name: "test",
+					},
+				},
+			},
+			wc2: WordCount{
+				Files: []File{
+					{
+						Name: "test1",
+					},
+					{
+						Name: "test2",
+					},
+				},
+			},
+			res: false,
+		},
+	}
+
+	for _, tt := range tcases {
+		if res := tt.wc1.Equal(tt.wc2); res != tt.res {
+			t.Errorf("unexpected %t result for %+v and %+v", res, tt.wc1, tt.wc2)
+		}
+	}
+}
