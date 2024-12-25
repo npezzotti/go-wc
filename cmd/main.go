@@ -39,10 +39,7 @@ func run(jsonOutput bool, goTemplate string) (status int) {
 			tmplString = goTemplate
 		}
 
-		fmtr, err = wc.NewTemplateFormatter(
-			tmplString,
-			os.Stdout,
-		)
+		fmtr, err = wc.NewTemplateFormatter(tmplString, os.Stdout)
 		if err != nil {
 			log.Printf("failed to initalize TemplateFormatter: %s", err.Error())
 			status = 1
