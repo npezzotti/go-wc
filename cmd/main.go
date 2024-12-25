@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"log"
@@ -60,8 +59,7 @@ func main() {
 			}
 			defer f.Close()
 
-			reader := bufio.NewReader(f)
-			wordCount.AddFile(reader, wc.File{Name: f.Name()})
+			wordCount.AddFile(f, wc.File{Name: f.Name()})
 		}
 	} else {
 		wordCount.AddFile(os.Stdin, wc.File{Name: ""})
