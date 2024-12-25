@@ -49,7 +49,7 @@ func main() {
 		for _, fileName := range flag.Args() {
 			f, err := os.Open(fileName)
 			if err != nil {
-				log.Printf("unable to open %s: %s\n", fileName, err.Error())
+				log.Print(err)
 				continue
 			}
 			defer f.Close()
