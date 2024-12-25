@@ -67,7 +67,10 @@ func run(jsonOutput bool, goTemplate string) (status int) {
 			}
 		}
 	} else {
-		wordCount.AddFile(os.Stdin, wc.File{Name: ""})
+		if err := wordCount.AddFile(os.Stdin, wc.File{Name: ""}); err != nil {
+			log.Print(err)
+			status = 1
+		}
 	}
 
 	if wordCount.Files != nil {
