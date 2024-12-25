@@ -13,7 +13,7 @@ type WordCount struct {
 	Files         []File `json:"files"`
 	TotalLines    int64  `json:"total-lines"`
 	TotalWords    int64  `json:"total-words"`
-	TotalBytes    int64  `json:"total-files"`
+	TotalBytes    int64  `json:"total-bytes"`
 	TotalRunes    int64  `json:"total-runes"`
 	MaxLineLength int64  `json:"max-line-length"`
 }
