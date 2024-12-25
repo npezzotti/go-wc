@@ -24,15 +24,19 @@ func main() {
 	log.SetPrefix(fmt.Sprintf("%s: ", progName))
 
 	flag.Parse()
+	os.Exit(run(*jsonOutput, *goTemplate))
+}
 
+func run(jsonOutput bool, goTemplate string) (status int) {
 	var fmtr wc.WCFormatter
 	var err error
-	if *jsonOutput {
+
+	if jsonOutput {
 		fmtr = wc.NewJsonFormatter(os.Stdout)
 	} else {
 		tmplString := defaultTemplate
-		if *goTemplate != "" {
-			tmplString = *goTemplate
+		if goTemplate != "" {
+			tmplString = goTemplate
 		}
 
 		fmtr, err = wc.NewTemplateFormatter(
@@ -40,7 +44,9 @@ func main() {
 			os.Stdout,
 		)
 		if err != nil {
-			log.Fatalf("failed to initalize TemplateFormatter: %s", err.Error())
+			log.Printf("failed to initalize TemplateFormatter: %s", err.Error())
+			status = 1
+			return
 		}
 	}
 
@@ -50,12 +56,14 @@ func main() {
 			f, err := os.Open(fileName)
 			if err != nil {
 				log.Print(err)
+				status = 1
 				continue
 			}
 			defer f.Close()
 
 			if err := wordCount.AddFile(f, wc.File{Name: f.Name()}); err != nil {
 				log.Print(err)
+				status = 1
 			}
 		}
 	} else {
@@ -63,6 +71,11 @@ func main() {
 	}
 
 	if wordCount.Files != nil {
-		fmtr.Write(wordCount)
+		if err := fmtr.Write(wordCount); err != nil {
+			log.Print(err)
+			status = 1
+		}
 	}
+
+	return
 }
