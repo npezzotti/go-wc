@@ -47,11 +47,6 @@ func main() {
 	var wordCount wc.WordCount
 	if len(flag.Args()) > 0 {
 		for _, fileName := range flag.Args() {
-			if err := validateFile(fileName); err != nil {
-				log.Print(err)
-				continue
-			}
-
 			f, err := os.Open(fileName)
 			if err != nil {
 				log.Printf("unable to open %s: %s\n", fileName, err.Error())
@@ -59,7 +54,9 @@ func main() {
 			}
 			defer f.Close()
 
-			wordCount.AddFile(f, wc.File{Name: f.Name()})
+			if err := wordCount.AddFile(f, wc.File{Name: f.Name()}); err != nil {
+				log.Print(err)
+			}
 		}
 	} else {
 		wordCount.AddFile(os.Stdin, wc.File{Name: ""})
@@ -68,21 +65,4 @@ func main() {
 	if wordCount.Files != nil {
 		fmtr.Write(wordCount)
 	}
-}
-
-func validateFile(fileName string) error {
-	fileInfo, err := os.Lstat(fileName)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return fmt.Errorf("%s: file does not exist", fileName)
-		} else {
-			return fmt.Errorf("lstat %s: %w", fileName, err)
-		}
-	}
-
-	if fileInfo.IsDir() {
-		return fmt.Errorf("%s is a directory", fileName)
-	}
-
-	return nil
 }

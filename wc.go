@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
-	"log"
 	"unicode/utf8"
 )
 
@@ -27,7 +27,7 @@ type File struct {
 	MaxLineLength int64  `json:"max-line-length"`
 }
 
-func (w *WordCount) AddFile(input io.Reader, f File) {
+func (w *WordCount) AddFile(input io.Reader, f File) error {
 	reader := bufio.NewReader(input)
 
 	hasLines := true
@@ -35,7 +35,7 @@ func (w *WordCount) AddFile(input io.Reader, f File) {
 		line, err := reader.ReadBytes('\n')
 		if err != nil {
 			if !errors.Is(err, io.EOF) {
-				log.Printf("read string: %s", err)
+				return fmt.Errorf("read string: %w", err)
 			}
 			hasLines = false
 		}
@@ -63,6 +63,8 @@ func (w *WordCount) AddFile(input io.Reader, f File) {
 	if w.MaxLineLength < f.MaxLineLength {
 		w.MaxLineLength = f.MaxLineLength
 	}
+
+	return nil
 }
 
 func (wc WordCount) Equal(wc2 WordCount) bool {
