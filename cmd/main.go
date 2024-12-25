@@ -64,8 +64,7 @@ func main() {
 			wordCount.AddFile(reader, wc.File{Name: f.Name()})
 		}
 	} else {
-		reader := bufio.NewReader(os.Stdin)
-		wordCount.AddFile(reader, wc.File{Name: ""})
+		wordCount.AddFile(os.Stdin, wc.File{Name: ""})
 	}
 
 	if wordCount.Files != nil {

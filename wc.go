@@ -27,7 +27,9 @@ type File struct {
 	MaxLineLength int64  `json:"max-line-length"`
 }
 
-func (w *WordCount) AddFile(reader *bufio.Reader, f File) {
+func (w *WordCount) AddFile(input io.Reader, f File) {
+	reader := bufio.NewReader(input)
+
 	hasLines := true
 	for hasLines {
 		line, err := reader.ReadBytes('\n')
@@ -61,4 +63,34 @@ func (w *WordCount) AddFile(reader *bufio.Reader, f File) {
 	if w.MaxLineLength < f.MaxLineLength {
 		w.MaxLineLength = f.MaxLineLength
 	}
+}
+
+func (wc WordCount) Equal(wc2 WordCount) bool {
+	if wc.TotalLines != wc2.TotalLines ||
+		wc.TotalWords != wc2.TotalWords ||
+		wc.TotalBytes != wc2.TotalBytes ||
+		wc.TotalRunes != wc2.TotalRunes ||
+		wc.MaxLineLength != wc2.MaxLineLength {
+		return false
+	}
+
+	if wc.Files == nil && wc2.Files == nil {
+		return true
+	}
+
+	if wc.Files == nil || wc2.Files == nil {
+		return false
+	}
+
+	if len(wc.Files) != len(wc2.Files) {
+		return false
+	}
+
+	for i := 0; i < len(wc.Files); i++ {
+		if wc.Files[i] != wc2.Files[i] {
+			return false
+		}
+	}
+
+	return true
 }
